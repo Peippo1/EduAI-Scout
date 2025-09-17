@@ -6,17 +6,25 @@ import streamlit as st
 
 
 API_BASE_URL = st.secrets.get("API_BASE_URL", "http://localhost:8000")
+API_KEY = st.secrets.get("BACKEND_API_KEY", None)
+
+
+def _auth_headers() -> Dict[str, str]:
+    headers: Dict[str, str] = {}
+    if API_KEY:
+        headers["X-API-Key"] = API_KEY
+    return headers
 
 
 def fetch_news(endpoint: str) -> List[Dict]:
-    resp = requests.get(f"{API_BASE_URL}{endpoint}")
+    resp = requests.get(f"{API_BASE_URL}{endpoint}", headers=_auth_headers())
     resp.raise_for_status()
     return resp.json()
 
 
 def send_email(email: str, articles: List[Dict]) -> Dict:
     payload = {"email": email, "articles": articles}
-    resp = requests.post(f"{API_BASE_URL}/send-email", json=payload)
+    resp = requests.post(f"{API_BASE_URL}/send-email", json=payload, headers=_auth_headers())
     resp.raise_for_status()
     return resp.json()
 

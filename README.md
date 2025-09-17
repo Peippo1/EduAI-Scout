@@ -52,4 +52,19 @@ src/
 - `emailer.py`: integrate a provider (e.g., SendGrid).
 - `guardrails.py`: expand keyword list or add a moderation API.
 
+### Security & Configuration
+- Backend enforces optional API key and rate limiting.
+  - Env vars:
+    - `BACKEND_API_KEY` (if set, required via `X-API-Key` header)
+    - `RATE_LIMIT_MAX` (default 60 reqs)
+    - `RATE_LIMIT_WINDOW_SECONDS` (default 60s)
+    - `ALLOWED_ORIGINS` (comma-separated for CORS; default `*`)
+    - `ALLOWED_EMAIL_DOMAINS` (comma-separated, optional)
+- Frontend adds `X-API-Key` from Streamlit secrets if provided:
+  - `.streamlit/secrets.toml`:
+    ```toml
+    API_BASE_URL = "http://localhost:8000"
+    BACKEND_API_KEY = "your-key"
+    ```
+
 
